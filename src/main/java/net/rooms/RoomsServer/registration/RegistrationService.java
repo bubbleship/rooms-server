@@ -1,16 +1,14 @@
 package net.rooms.RoomsServer.registration;
 
+import lombok.AllArgsConstructor;
 import net.rooms.RoomsServer.user.UserService;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class RegistrationService {
 
 	private final UserService userService;
-
-	public RegistrationService(UserService userService) {
-		this.userService = userService;
-	}
 
 	public String register(RegistrationRequest request) {
 		if (request.username().contains("\"")) throw new IllegalStateException("Invalid username");

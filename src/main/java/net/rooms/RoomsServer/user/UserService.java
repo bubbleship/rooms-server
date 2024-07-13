@@ -1,5 +1,6 @@
 package net.rooms.RoomsServer.user;
 
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -9,17 +10,13 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
+@AllArgsConstructor
 public class UserService implements UserDetailsService {
 
 	private final static String USER_NOT_FOUND_MSG = "user with username %s not found";
 
 	private final UserRepository userRepository;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-	public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
-		this.userRepository = userRepository;
-		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
