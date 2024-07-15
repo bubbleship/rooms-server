@@ -26,15 +26,15 @@ public class UserService implements UserDetailsService {
 								String.format(USER_NOT_FOUND_MSG, username)));
 	}
 
-	public void signupUser(String nickname, String username, String password, UserRole role) {
+	public String signupUser(String nickname, String username, String password, UserRole role) {
 		boolean userExists = userRepository
 				.findByUsername(username)
 				.isPresent();
 
-		if (userExists) throw new IllegalStateException("username already taken");
+		if (userExists) return "username already taken";
 
 		password = bCryptPasswordEncoder.encode(password);
 
-		userRepository.create(new User(nickname, username, password, role, LocalDateTime.now()));
+		return userRepository.create(new User(nickname, username, password, role, LocalDateTime.now()));
 	}
 }

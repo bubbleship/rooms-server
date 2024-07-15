@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
-public class JdbcUserRepository implements UserRepository{
+public class JdbcUserRepository implements UserRepository {
 
 	private final JdbcClient jdbcClient;
 
@@ -23,24 +23,26 @@ public class JdbcUserRepository implements UserRepository{
 
 	@Override
 	public Optional<User> findByUsername(String username) {
-		return jdbcClient.sql("SELECT * FROM users WHERE username = ?" )
+		return jdbcClient.sql("SELECT * FROM users WHERE username = ?")
 				.params(username)
 				.query(User.class)
 				.optional();
 	}
 
 	@Override
-	public void create(User user) {
+	public String create(User user) {
 		var updated = jdbcClient.sql("INSERT INTO users(nickname,username,password,role,signup_date) VALUES(?,?,?,?,?)")
 				.params(List.of(user.nickname(), user.username(), user.password(), user.role().ordinal(), user.signupDate()))
 				.update();
-		Assert.state(updated == 1, "Failed to create user " + user.username());
+
+		if (updated != 1) return "Failed to create user " + user.username();
+		return "success";
 	}
 
 	@Override
 	public void update(User user, String username) {
 		var updated = jdbcClient.sql("UPDATE users SET nickname = ?, username = ?, password = ?, role = ? WHERE username = ?")
-				.params(List.of(user.nickname(),user.username(),user.password(),user.role(), username))
+				.params(List.of(user.nickname(), user.username(), user.password(), user.role(), username))
 				.update();
 
 		Assert.state(updated == 1, "Failed to update user " + user.username());
