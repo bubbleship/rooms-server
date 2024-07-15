@@ -1,11 +1,10 @@
 CREATE TABLE IF NOT EXISTS users (
-   uid INT NOT NULL,
    nickname varchar(250) NOT NULL,
    username varchar(250) NOT NULL,
    password varchar(250) NOT NULL,
-   user_role INT NOT NULL,
+   role INT NOT NULL,
    signup_date TIMESTAMP NOT NULL,
-   PRIMARY KEY (uid)
+   PRIMARY KEY (username)
 );
 
 CREATE TABLE IF NOT EXISTS room (
@@ -20,9 +19,9 @@ CREATE TABLE IF NOT EXISTS room (
 );
 
 CREATE TABLE IF NOT EXISTS join_user_room (
-    uid INT NOT NULL,
+    username INT NOT NULL,
     rid INT NOT NULL,
-    PRIMARY KEY (uid, rid),
-    FOREIGN KEY (uid) REFERENCES users,
+    PRIMARY KEY (username, rid),
+    FOREIGN KEY (username) REFERENCES users,
     FOREIGN KEY (rid) REFERENCES room
 )

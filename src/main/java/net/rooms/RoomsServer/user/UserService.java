@@ -34,8 +34,7 @@ public class UserService implements UserDetailsService {
 		if (userExists) throw new IllegalStateException("username already taken");
 
 		password = bCryptPasswordEncoder.encode(password);
-		Long uid = userRepository.lastID() + 1;
 
-		userRepository.create(new User(uid, nickname, username, password, role, LocalDateTime.now()));
+		userRepository.create(new User(nickname, username, password, role, LocalDateTime.now()));
 	}
 }

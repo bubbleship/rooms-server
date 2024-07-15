@@ -22,55 +22,42 @@ public class JdbcUserRepository implements UserRepository{
 	}
 
 	@Override
-	public Optional<User> findById(Long uid) {
-		return jdbcClient.sql("SELECT * FROM users WHERE uid = :uid" )
-				.param("uid", uid)
-				.query(User.class)
-				.optional();
-	}
-
-	@Override
 	public Optional<User> findByUsername(String username) {
-		return jdbcClient.sql("SELECT * FROM users WHERE username = :username" )
-				.param("username", username)
+		return jdbcClient.sql("SELECT * FROM users WHERE username = ?" )
+				.params(username)
 				.query(User.class)
 				.optional();
 	}
 
 	@Override
 	public void create(User user) {
-		var updated = jdbcClient.sql("INSERT INTO users(uid,nickname,username,password,user_role,signup_date) VALUES(?,?,?,?,?,?)")
-				.params(List.of(user.uid(), user.nickname(), user.username(), user.password(), user.role(), user.signupDate()))
+		var updated = jdbcClient.sql("INSERT INTO users(nickname,username,password,role,signup_date) VALUES(?,?,?,?,?)")
+				.params(List.of(user.nickname(), user.username(), user.password(), user.role().ordinal(), user.signupDate()))
 				.update();
 		Assert.state(updated == 1, "Failed to create user " + user.username());
 	}
 
 	@Override
-	public void update(User user, Long uid) {
-		var updated = jdbcClient.sql("UPDATE users SET nickname = ?, username = ?, password = ?, user_role = ? WHERE uid = ?")
-				.params(List.of(user.nickname(),user.username(),user.password(),user.role(), uid))
+	public void update(User user, String username) {
+		var updated = jdbcClient.sql("UPDATE users SET nickname = ?, username = ?, password = ?, role = ? WHERE username = ?")
+				.params(List.of(user.nickname(),user.username(),user.password(),user.role(), username))
 				.update();
 
-		Assert.state(updated == 1, "Failed to update user " + user.username() + ":" + user.uid());
+		Assert.state(updated == 1, "Failed to update user " + user.username());
 	}
 
 	@Override
-	public void delete(Long uid) {
-		var updated = jdbcClient.sql("DELETE FROM users WHERE uid = :uid")
-				.param("uid", uid)
+	public void delete(String username) {
+		var updated = jdbcClient.sql("DELETE FROM users WHERE username = ?")
+				.params(username)
 				.update();
 
-		Assert.state(updated == 1, "Failed to delete user " + uid);
+		Assert.state(updated == 1, "Failed to delete user " + username);
 	}
 
 	@Override
 	public int count() {
 		return jdbcClient.sql("SELECT * FROM users").query().listOfRows().size();
-	}
-
-	@Override
-	public Long lastID() {
-		return (Long) jdbcClient.sql("SELECT MAX(uid) FROM users").query().singleValue();
 	}
 
 	@Override

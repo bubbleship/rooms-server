@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.Collections;
 
 public record User(
-		Long uid,
 		String nickname,
 		String username,
 		String password,
