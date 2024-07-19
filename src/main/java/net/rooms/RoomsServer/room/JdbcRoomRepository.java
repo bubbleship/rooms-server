@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @AllArgsConstructor
 public class JdbcRoomRepository implements RoomRepository {
@@ -39,5 +41,16 @@ public class JdbcRoomRepository implements RoomRepository {
 		//noinspection ConstantValue
 		if (result == null) return 0L;
 		return Long.valueOf((Integer) result);
+	}
+
+	@Override
+	public List<Room> listByUser(String username) {
+		return jdbcClient.sql("SELECT room.rid AS room_i_d, room.title, room.is_private, room.password, room.owner, room.creation_date " +
+							  "FROM join_user_room AS jur " +
+							  "JOIN room ON room.rid = jur.rid " +
+							  "WHERE jur.username = ?")
+				.params(username)
+				.query(Room.class)
+				.list();
 	}
 }

@@ -3,6 +3,7 @@ package net.rooms.RoomsServer.room;
 import lombok.AllArgsConstructor;
 import net.rooms.RoomsServer.user.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,5 +17,10 @@ public class RoomController {
 	@PostMapping(path = "api/v1/room/create")
 	public String create(@RequestBody CreateRequest request, @AuthenticationPrincipal User user) {
 		return roomService.create(request, user);
+	}
+
+	@GetMapping(path = "api/v1/room/list")
+	public String list(@AuthenticationPrincipal User user) {
+		return roomService.list(user);
 	}
 }

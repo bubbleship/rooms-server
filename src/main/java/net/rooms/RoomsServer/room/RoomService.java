@@ -1,6 +1,9 @@
 package net.rooms.RoomsServer.room;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.AllArgsConstructor;
+import net.rooms.RoomsServer.adapters.LocalDateTimeAdapter;
 import net.rooms.RoomsServer.user.User;
 import org.springframework.stereotype.Service;
 
@@ -24,5 +27,13 @@ public class RoomService {
 			return "Room creation failed on join";
 		}
 		return "success";
+	}
+
+	public String list(User user) {
+		Gson gson = new GsonBuilder()
+				.setPrettyPrinting()
+				.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+				.create();
+		return gson.toJson(roomRepository.listByUser(user.username()));
 	}
 }
