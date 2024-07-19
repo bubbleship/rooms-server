@@ -14,6 +14,22 @@ public class RoomController {
 
 	private final RoomService roomService;
 
+	/**
+	 * Accepts API requests for room creation.
+	 * Only logged-in users may create a room.
+	 * JSON content request example:
+	 * <code>
+	 * {
+	 *   "title" : "title",
+	 *   "is_private" : false,
+	 *   "password" : ""
+	 * }
+	 * </code>
+	 *
+	 * @param request Configurations set by the user about the room to create.
+	 * @param user    The currently logged-in user.
+	 * @return A string with an error message in case the creation failed. Otherwise, "success".
+	 */
 	@PostMapping(path = "api/v1/room/create")
 	public String create(@RequestBody CreateRequest request, @AuthenticationPrincipal User user) {
 		return roomService.create(request, user);

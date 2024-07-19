@@ -15,6 +15,17 @@ public class RoomService {
 
 	private final RoomRepository roomRepository;
 
+	/**
+	 * Handles the creation of a new room.
+	 * Ensures none of its fields contains problematic characters.
+	 * Prepares a unique identifier for the room.
+	 * Sets the time of the room creation.
+	 * Writes the room to the database and set the creator as a participant in the room.
+	 *
+	 * @param request Configurations set by the user about the room to create.
+	 * @param user    The currently logged-in user (the creator of the room).
+	 * @return A string with an error message in case the creation failed. Otherwise, "success".
+	 */
 	public String create(CreateRequest request, User user) {
 		if (request.title().contains("\"")) return "Invalid character: \"";
 		if (request.password().contains("\"")) return "Invalid character: \"";
@@ -23,7 +34,7 @@ public class RoomService {
 		Room room = new Room(roomID, request.title(), request.isPrivate(), request.password(), user.username(), LocalDateTime.now());
 		if (!roomRepository.create(room)) return "Room creation failed on create";
 		if (!roomRepository.joinUser(roomID, user.username())) {
-			roomRepository.delete(roomID);
+			roomRepository.delete(roomID); // Cleans the room in case the join table could not be updated.
 			return "Room creation failed on join";
 		}
 		return "success";
