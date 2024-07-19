@@ -35,9 +35,9 @@ public class JdbcRoomRepository implements RoomRepository {
 
 	@Override
 	public long lastID() {
-		Long result = (Long) jdbcClient.sql("SELECT MAX(rid) FROM room").query().singleValue();
+		Object result = jdbcClient.sql("SELECT MAX(rid) FROM room").query().singleValue();
 		//noinspection ConstantValue
 		if (result == null) return 0L;
-		return result;
+		return Long.valueOf((Integer) result);
 	}
 }
