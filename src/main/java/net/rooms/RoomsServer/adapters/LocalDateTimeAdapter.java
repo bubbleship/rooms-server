@@ -9,6 +9,9 @@ import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Allows serializing {@link LocalDateTime} objects into json.
+ */
 public class LocalDateTimeAdapter implements JsonSerializer<LocalDateTime> {
 	@Override
 	public JsonElement serialize(LocalDateTime src, Type typeOfSrc, JsonSerializationContext context) {

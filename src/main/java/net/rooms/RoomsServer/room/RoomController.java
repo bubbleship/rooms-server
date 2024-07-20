@@ -35,6 +35,13 @@ public class RoomController {
 		return roomService.create(request, user);
 	}
 
+	/**
+	 * Accepts REST API GET requests for list of rooms where the logged-in user is participating.
+	 * Only logged-in users may receive a list of such rooms.
+	 *
+	 * @param user The currently logged-in user.
+	 * @return A json string containing a list of rooms where the user is a participant.
+	 */
 	@GetMapping(path = "api/v1/room/list")
 	public String list(@AuthenticationPrincipal User user) {
 		return roomService.list(user);

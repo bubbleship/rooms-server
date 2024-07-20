@@ -71,6 +71,14 @@ public class JdbcRoomRepository implements RoomRepository {
 		return Long.valueOf((Integer) result);
 	}
 
+	/**
+	 * Query the 'room' and 'join_user_room' tables for all rooms where the given username is
+	 * registered as a participant.
+	 *
+	 * @param username The username to search in the 'join_user_room' table.
+	 * @return A list of {@link Room} objects representing the rooms where the user is a
+	 * participant.
+	 */
 	@Override
 	public List<Room> listByUser(String username) {
 		return jdbcClient.sql("SELECT room.rid AS room_i_d, room.title, room.is_private, room.password, room.owner, room.creation_date " +

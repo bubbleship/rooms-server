@@ -40,6 +40,12 @@ public class RoomService {
 		return "success";
 	}
 
+	/**
+	 * Prepares the json string with the list of rooms for the specified user.
+	 *
+	 * @param user The currently logged-in user.
+	 * @return A json string containing a list of rooms where the user is a participant.
+	 */
 	public String list(User user) {
 		Gson gson = new GsonBuilder()
 				.setPrettyPrinting()
