@@ -48,7 +48,6 @@ public class RoomService {
 	 */
 	public String list(User user) {
 		Gson gson = new GsonBuilder()
-				.setPrettyPrinting()
 				.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
 				.create();
 		return gson.toJson(roomRepository.listByUser(user.username()));
