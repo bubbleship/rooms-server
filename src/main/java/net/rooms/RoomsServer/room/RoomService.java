@@ -27,9 +27,7 @@ public class RoomService {
 	 * @return A string with an error message in case the creation failed. Otherwise, "success".
 	 */
 	public String create(CreateRequest request, User user) {
-		if (request.title().contains("\"")) return "Invalid character: \"";
 		if (request.password().contains("\"")) return "Invalid character: \"";
-		if (request.description().contains("\"")) return "Invalid character: \"";
 
 		long roomID = roomRepository.lastID() + 1;
 		Room room = new Room(roomID, request.title(), request.isPrivate(), request.password(), user.username(), LocalDateTime.now(), request.description());
