@@ -53,4 +53,21 @@ public class RoomService {
 				.create();
 		return gson.toJson(roomRepository.listByUser(user.username()));
 	}
+
+	/**
+	 * Updates the description of a specific room. Would allow the update only if the specified
+	 * user is a participant in said room.
+	 *
+	 * @param request Configurations set by the user about the new description and to which room.
+	 * @param user    The currently logged-in user.
+	 * @return A string with an error message in case the operation failed. Otherwise, "success".
+	 */
+	public String updateDescription(UpdateDescriptionRequest request, User user) {
+		if (!roomRepository.isParticipant(request.roomID(), user.username()))
+			return "Access denied. User " + user.username() + " is not a participant in room " + request.roomID();
+		if (!roomRepository.updateDescription(request.roomID(), request.description()))
+			return "Description update failed for room " + request.roomID();
+
+		return "success";
+	}
 }

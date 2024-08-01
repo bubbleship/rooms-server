@@ -46,4 +46,24 @@ public class RoomController {
 	public String list(@AuthenticationPrincipal User user) {
 		return roomService.list(user);
 	}
+
+	/**
+	 * Accepts REST API POST requests for updating the description of a specific room.
+	 * Only logged-in users who are participants in the room may update its description.
+	 * JSON content request example:
+	 * <code>
+	 * {
+	 *   "roomID" : 1,
+	 *   "description" : "A description"
+	 * }
+	 * </code>
+	 *
+	 * @param request Configurations set by the user about the new description and to which room.
+	 * @param user    The currently logged-in user.
+	 * @return A string with an error message in case the operation failed. Otherwise, "success".
+	 */
+	@PostMapping(path = "api/v1/room/update/description")
+	public String updateDescription(@RequestBody UpdateDescriptionRequest request, @AuthenticationPrincipal User user) {
+		return roomService.updateDescription(request, user);
+	}
 }
