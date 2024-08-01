@@ -104,4 +104,21 @@ public class JdbcRoomRepository implements RoomRepository {
 				.update();
 		return updated == 1;
 	}
+
+	/**
+	 * Verify whether the user with the given username is a participant in the specified room.
+	 *
+	 * @param roomID   The identifier of the specified room.
+	 * @param username The username of the user to verify.
+	 * @return True if the given user is a participant in the specified room. Otherwise, false.
+	 */
+	@Override
+	public boolean isParticipant(long roomID, String username) {
+		int status = jdbcClient.sql("SELECT 1 FROM join_user_room WHERE rid = ? AND username = ? LIMIT 1")
+				.params(roomID, username)
+				.query()
+				.listOfRows()
+				.size();
+		return status == 1;
+	}
 }

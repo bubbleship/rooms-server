@@ -57,4 +57,13 @@ public interface RoomRepository {
 	 * @return True if the operation was successful. Otherwise, false.
 	 */
 	boolean updateDescription(long roomID, String description);
+
+	/**
+	 * Verify whether the user with the given username is a participant in the specified room.
+	 *
+	 * @param roomID   The identifier of the specified room.
+	 * @param username The username of the user to verify.
+	 * @return True if the given user is a participant in the specified room. Otherwise, false.
+	 */
+	boolean isParticipant(long roomID, String username);
 }
