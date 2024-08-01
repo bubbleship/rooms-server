@@ -1,4 +1,4 @@
-package net.rooms.RoomsServer.room;
+package net.rooms.RoomsServer.room.requests;
 
 /**
  * Represents a description update request for a specific room. Requests for updating the

@@ -1,4 +1,4 @@
-package net.rooms.RoomsServer.room;
+package net.rooms.RoomsServer.room.requests;
 
 /**
  * Represents a room creation request. Requests for creating a new room are converted to this

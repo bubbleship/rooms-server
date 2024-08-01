@@ -1,6 +1,8 @@
 package net.rooms.RoomsServer.room;
 
 import lombok.AllArgsConstructor;
+import net.rooms.RoomsServer.room.requests.CreateRequest;
+import net.rooms.RoomsServer.room.requests.UpdateDescriptionRequest;
 import net.rooms.RoomsServer.user.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;

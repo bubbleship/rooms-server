@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.AllArgsConstructor;
 import net.rooms.RoomsServer.adapters.LocalDateTimeAdapter;
+import net.rooms.RoomsServer.room.requests.CreateRequest;
+import net.rooms.RoomsServer.room.requests.UpdateDescriptionRequest;
 import net.rooms.RoomsServer.user.User;
 import org.springframework.stereotype.Service;
 
