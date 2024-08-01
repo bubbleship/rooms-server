@@ -21,7 +21,7 @@ public class RoomController {
 	 * <code>
 	 * {
 	 *   "title" : "title",
-	 *   "is_private" : false,
+	 *   "isPrivate" : false,
 	 *   "password" : ""
 	 * }
 	 * </code>
