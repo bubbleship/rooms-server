@@ -89,4 +89,19 @@ public class JdbcRoomRepository implements RoomRepository {
 				.query(Room.class)
 				.list();
 	}
+
+	/**
+	 * Updates the description of the specified room to the given string.
+	 *
+	 * @param roomID      The identifier of the room to update.
+	 * @param description The new description text to replace the old one.
+	 * @return True if the operation was successful. Otherwise, false.
+	 */
+	@Override
+	public boolean updateDescription(long roomID, String description) {
+		int updated = jdbcClient.sql("UPDATE room SET description = ? WHERE rid = ?")
+				.params(description, roomID)
+				.update();
+		return updated == 1;
+	}
 }

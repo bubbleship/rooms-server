@@ -48,4 +48,13 @@ public interface RoomRepository {
 	 * participant.
 	 */
 	List<Room> listByUser(String username);
+
+	/**
+	 * Updates the description of the specified room to the given string.
+	 *
+	 * @param roomID      The identifier of the room to update.
+	 * @param description The new description text to replace the old one.
+	 * @return True if the operation was successful. Otherwise, false.
+	 */
+	boolean updateDescription(long roomID, String description);
 }
