@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS room (
    password varchar(250),
    owner varchar(250) NOT NULL,
    creation_date TIMESTAMP NOT NULL,
+   description VARCHAR(MAX) NOT NULL,
    PRIMARY KEY (rid),
    FOREIGN KEY (owner) REFERENCES users
 );

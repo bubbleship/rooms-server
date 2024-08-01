@@ -8,6 +8,7 @@ public record Room(
 		boolean isPrivate,
 		String password,
 		String owner,
-		LocalDateTime creationDate
+		LocalDateTime creationDate,
+		String description
 ) {
 }

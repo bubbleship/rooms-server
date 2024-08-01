@@ -22,8 +22,8 @@ public class JdbcRoomRepository implements RoomRepository {
 	 */
 	@Override
 	public boolean create(Room room) {
-		int updated = jdbcClient.sql("INSERT INTO room(rid,title,is_private,password,owner,creation_date) VALUES(?,?,?,?,?,?)")
-				.params(room.roomID(), room.title(), room.isPrivate(), room.password(), room.owner(), room.creationDate())
+		int updated = jdbcClient.sql("INSERT INTO room(rid,title,is_private,password,owner,creation_date,description) VALUES(?,?,?,?,?,?,?)")
+				.params(room.roomID(), room.title(), room.isPrivate(), room.password(), room.owner(), room.creationDate(), room.description())
 				.update();
 		return updated == 1;
 	}
@@ -81,7 +81,7 @@ public class JdbcRoomRepository implements RoomRepository {
 	 */
 	@Override
 	public List<Room> listByUser(String username) {
-		return jdbcClient.sql("SELECT room.rid AS room_i_d, room.title, room.is_private, room.password, room.owner, room.creation_date " +
+		return jdbcClient.sql("SELECT room.rid AS room_i_d, room.title, room.is_private, room.password, room.owner, room.creation_date, room.description " +
 							  "FROM join_user_room AS jur " +
 							  "JOIN room ON room.rid = jur.rid " +
 							  "WHERE jur.username = ?")
