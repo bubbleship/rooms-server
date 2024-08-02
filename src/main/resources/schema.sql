@@ -12,14 +12,15 @@ CREATE TABLE IF NOT EXISTS room (
    title varchar(250) NOT NULL,
    is_private BIT NOT NULL,
    password varchar(250),
-   owner INT NOT NULL,
-   signup_date TIMESTAMP NOT NULL,
+   owner varchar(250) NOT NULL,
+   creation_date TIMESTAMP NOT NULL,
+   description VARCHAR(MAX) NOT NULL,
    PRIMARY KEY (rid),
    FOREIGN KEY (owner) REFERENCES users
 );
 
 CREATE TABLE IF NOT EXISTS join_user_room (
-    username INT NOT NULL,
+    username varchar(250) NOT NULL,
     rid INT NOT NULL,
     PRIMARY KEY (username, rid),
     FOREIGN KEY (username) REFERENCES users,
