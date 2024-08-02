@@ -3,6 +3,7 @@ package net.rooms.RoomsServer.room;
 import lombok.AllArgsConstructor;
 import net.rooms.RoomsServer.room.requests.CreateRequest;
 import net.rooms.RoomsServer.room.requests.UpdateDescriptionRequest;
+import net.rooms.RoomsServer.room.requests.UpdateTitleRequest;
 import net.rooms.RoomsServer.user.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +48,26 @@ public class RoomController {
 	@GetMapping(path = "api/v1/room/list")
 	public String list(@AuthenticationPrincipal User user) {
 		return roomService.list(user);
+	}
+
+	/**
+	 * Accepts REST API POST requests for updating the title of a specific room.
+	 * Only logged-in users who are participants in the room may update its title.
+	 * JSON content request example:
+	 * <code>
+	 * {
+	 *   "roomID" : 1,
+	 *   "title" : "A Title"
+	 * }
+	 * </code>
+	 *
+	 * @param request Configurations set by the user about the new title and to which room.
+	 * @param user    The currently logged-in user.
+	 * @return A string with an error message in case the operation failed. Otherwise, "success".
+	 */
+	@PostMapping(path = "api/v1/room/update/title")
+	public String updateTitle(@RequestBody UpdateTitleRequest request, @AuthenticationPrincipal User user) {
+		return roomService.updateTitle(request, user);
 	}
 
 	/**

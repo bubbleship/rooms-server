@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import net.rooms.RoomsServer.adapters.LocalDateTimeAdapter;
 import net.rooms.RoomsServer.room.requests.CreateRequest;
 import net.rooms.RoomsServer.room.requests.UpdateDescriptionRequest;
+import net.rooms.RoomsServer.room.requests.UpdateTitleRequest;
 import net.rooms.RoomsServer.user.User;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +53,23 @@ public class RoomService {
 				.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
 				.create();
 		return gson.toJson(roomRepository.listByUser(user.username()));
+	}
+
+	/**
+	 * Updates the description of a specific room. Would allow the update only if the specified
+	 * user is a participant in said room.
+	 *
+	 * @param request Configurations set by the user about the new description and to which room.
+	 * @param user    The currently logged-in user.
+	 * @return A string with an error message in case the operation failed. Otherwise, "success".
+	 */
+	public String updateTitle(UpdateTitleRequest request, User user) {
+		if (!roomRepository.isParticipant(request.roomID(), user.username()))
+			return "Access denied. User " + user.username() + " is not a participant in room " + request.roomID();
+		if (!roomRepository.updateTitle(request.roomID(), request.title()))
+			return "Title update failed for room " + request.roomID();
+
+		return "success";
 	}
 
 	/**
