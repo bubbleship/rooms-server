@@ -50,6 +50,15 @@ public interface RoomRepository {
 	List<Room> listByUser(String username);
 
 	/**
+	 * Updates the title of the specified room to the given string.
+	 *
+	 * @param roomID The identifier of the room to update.
+	 * @param title  The new title text to replace the old one.
+	 * @return True if the operation was successful. Otherwise, false.
+	 */
+	boolean updateTitle(long roomID, String title);
+
+	/**
 	 * Updates the description of the specified room to the given string.
 	 *
 	 * @param roomID      The identifier of the room to update.

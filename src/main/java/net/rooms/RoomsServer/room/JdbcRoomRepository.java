@@ -91,6 +91,21 @@ public class JdbcRoomRepository implements RoomRepository {
 	}
 
 	/**
+	 * Updates the title of the specified room to the given string.
+	 *
+	 * @param roomID The identifier of the room to update.
+	 * @param title  The new title text to replace the old one.
+	 * @return True if the operation was successful. Otherwise, false.
+	 */
+	@Override
+	public boolean updateTitle(long roomID, String title) {
+		int updated = jdbcClient.sql("UPDATE room SET title = ? WHERE rid = ?")
+				.params(title, roomID)
+				.update();
+		return updated == 1;
+	}
+
+	/**
 	 * Updates the description of the specified room to the given string.
 	 *
 	 * @param roomID      The identifier of the room to update.
