@@ -27,7 +27,8 @@ public class RoomService {
 	 *
 	 * @param request Configurations set by the user about the room to create.
 	 * @param user    The currently logged-in user (the creator of the room).
-	 * @return A string with an error message in case the creation failed. Otherwise, "success".
+	 * @return A string with an error message in case the creation failed. Otherwise, json of the
+	 * newly created room.
 	 */
 	public String create(CreateRequest request, User user) {
 		if (request.password().contains("\"")) return "Invalid character: \"";

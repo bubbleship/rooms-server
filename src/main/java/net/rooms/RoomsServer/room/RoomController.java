@@ -31,7 +31,8 @@ public class RoomController {
 	 *
 	 * @param request Configurations set by the user about the room to create.
 	 * @param user    The currently logged-in user.
-	 * @return A string with an error message in case the creation failed. Otherwise, "success".
+	 * @return A string with an error message in case the creation failed. Otherwise, json of the
+	 * newly created room.
 	 */
 	@PostMapping(path = "api/v1/room/create")
 	public String create(@RequestBody CreateRequest request, @AuthenticationPrincipal User user) {
