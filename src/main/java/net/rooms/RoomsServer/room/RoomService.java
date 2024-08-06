@@ -39,7 +39,11 @@ public class RoomService {
 			roomRepository.delete(roomID); // Cleans the room in case the join table could not be updated.
 			return "Room creation failed on join";
 		}
-		return "success";
+
+		Gson gson = new GsonBuilder()
+				.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+				.create();
+		return gson.toJson(room);
 	}
 
 	/**
