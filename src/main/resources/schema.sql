@@ -25,4 +25,16 @@ CREATE TABLE IF NOT EXISTS join_user_room (
     PRIMARY KEY (username, rid),
     FOREIGN KEY (username) REFERENCES users,
     FOREIGN KEY (rid) REFERENCES room
-)
+);
+
+CREATE TABLE IF NOT EXISTS message (
+    rid INT NOT NULL,
+    index INT NOT NULL,
+    type INT NOT NULL,
+    sender varchar(250) NOT NULL,
+    content VARCHAR(MAX) NOT NULL,
+    send_date TIMESTAMP NOT NULL,
+    PRIMARY KEY (rid, index),
+    FOREIGN KEY (rid) REFERENCES room,
+    FOREIGN KEY (sender) REFERENCES users
+);
