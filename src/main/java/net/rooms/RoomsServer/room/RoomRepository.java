@@ -1,5 +1,7 @@
 package net.rooms.RoomsServer.room;
 
+import net.rooms.RoomsServer.user.Participant;
+
 import java.util.List;
 
 public interface RoomRepository {
@@ -75,4 +77,6 @@ public interface RoomRepository {
 	 * @return True if the given user is a participant in the specified room. Otherwise, false.
 	 */
 	boolean isParticipant(long roomID, String username);
+
+	List<Participant> listParticipants(long roomID);
 }

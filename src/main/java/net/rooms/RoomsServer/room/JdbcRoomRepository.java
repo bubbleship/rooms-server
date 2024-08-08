@@ -1,6 +1,7 @@
 package net.rooms.RoomsServer.room;
 
 import lombok.AllArgsConstructor;
+import net.rooms.RoomsServer.user.Participant;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
@@ -135,5 +136,16 @@ public class JdbcRoomRepository implements RoomRepository {
 				.listOfRows()
 				.size();
 		return status == 1;
+	}
+
+	@Override
+	public List<Participant> listParticipants(long roomID) {
+		return jdbcClient.sql("SELECT users.nickname, users.username, users.signup_date " +
+							  "FROM join_user_room AS jur " +
+							  "JOIN users ON users.username = jur.username " +
+							  "WHERE jur.rid = ?")
+				.params(roomID)
+				.query(Participant.class)
+				.list();
 	}
 }
