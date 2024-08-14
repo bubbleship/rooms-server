@@ -15,7 +15,7 @@ public class JdbcMessageRepository implements MessageRepository {
 	@Override
 	public boolean create(Message message) {
 		int updated = jdbcClient.sql("INSERT INTO message(rid,index,type,sender,content,send_date) VALUES(?,?,?,?,?,?)")
-				.params(message.roomID(),message.index(), message.type(), message.sender(), message.content(), message.sendDate())
+				.params(message.roomID(),message.index(), message.type().ordinal(), message.sender(), message.content(), message.sendDate())
 				.update();
 		return updated == 1;
 	}
