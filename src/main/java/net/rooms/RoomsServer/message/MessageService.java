@@ -21,8 +21,8 @@ public class MessageService {
 	public Message create(MessageRequest request, User user) {
 		if (!roomRepository.isParticipant(request.roomID(), user.username())) return Message.EMPTY;
 
-		long index = messageRepository.lastIndex(request.roomID());
-		Message message = new Message(request.roomID(), index, request.type(), user.username(), request.content(), LocalDateTime.now());
+		long id = messageRepository.lastID();
+		Message message = new Message(id, request.roomID(), request.type(), user.username(), request.content(), LocalDateTime.now());
 		if (!messageRepository.create(message)) return Message.EMPTY;
 		return message;
 	}
