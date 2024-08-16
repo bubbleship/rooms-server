@@ -67,6 +67,8 @@ public class RoomService {
 	/**
 	 * Updates the description of a specific room. Would allow the update only if the specified
 	 * user is a participant in said room.
+	 * Sends a notification with the new room details to all participants if the update was
+	 * successful at "/queue/title".
 	 *
 	 * @param request Configurations set by the user about the new description and to which room.
 	 * @param user    The currently logged-in user.
@@ -78,7 +80,9 @@ public class RoomService {
 		if (!roomRepository.updateTitle(request.roomID(), request.title()))
 			return "Title update failed for room " + request.roomID();
 
-
+		Room room = roomRepository.getByID(request.roomID());
+		String parsedRoom = JSON.toJson(room);
+		notifyParticipants(request.roomID(), "/queue/title", parsedRoom);
 
 		return "success";
 	}
