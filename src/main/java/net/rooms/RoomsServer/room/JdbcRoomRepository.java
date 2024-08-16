@@ -156,7 +156,7 @@ public class JdbcRoomRepository implements RoomRepository {
 
 	@Override
 	public List<Participant> listParticipants(long roomID) {
-		return jdbcClient.sql("SELECT users.nickname, users.username, users.signup_date " +
+		return jdbcClient.sql("SELECT jur.rid AS room_i_d, users.nickname, users.username, users.signup_date " +
 							  "FROM join_user_room AS jur " +
 							  "JOIN users ON users.username = jur.username " +
 							  "WHERE jur.rid = ?")

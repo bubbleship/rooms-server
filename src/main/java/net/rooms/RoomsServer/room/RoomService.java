@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import net.rooms.RoomsServer.JSON;
 import net.rooms.RoomsServer.adapters.LocalDateTimeAdapter;
 import net.rooms.RoomsServer.room.requests.CreateRequest;
+import net.rooms.RoomsServer.room.requests.JoinRequest;
 import net.rooms.RoomsServer.room.requests.UpdateDescriptionRequest;
 import net.rooms.RoomsServer.room.requests.UpdateTitleRequest;
 import net.rooms.RoomsServer.user.Participant;
@@ -62,6 +63,30 @@ public class RoomService {
 				.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
 				.create();
 		return gson.toJson(roomRepository.listByUser(user.username()));
+	}
+
+	/**
+	 * Adds the given user to the specified room. Allows the addition only if the specified
+	 * password is correct and the user is not already a participant in the room.
+	 * Sends a notification with the new participant details to all participants if the join was
+	 * successful at "/queue/join".
+	 *
+	 * @param request Specifies to which room to join the user and the password.
+	 * @param user    The currently logged-in user that attempts to join the room.
+	 * @return A string with an error message in case the operation failed. Otherwise, "success".
+	 */
+	public String join(JoinRequest request, User user) {
+		if (roomRepository.isParticipant(request.roomID(), user.username()))
+			return "User " + user.username() + " is already a participant at room " + request.roomID();
+		if (!roomRepository.getByID(request.roomID()).password().equals(request.password()))
+			return "Join failed, invalid password";
+
+		if (!roomRepository.joinUser(request.roomID(), user.username())) return "Join failed";
+
+		Participant participant = new Participant(request.roomID(), user.nickname(), user.username(), user.signupDate());
+		notifyParticipants(request.roomID(), "/queue/join", JSON.toJson(participant));
+
+		return "success";
 	}
 
 	/**

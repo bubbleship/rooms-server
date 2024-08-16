@@ -2,6 +2,7 @@ package net.rooms.RoomsServer.room;
 
 import lombok.AllArgsConstructor;
 import net.rooms.RoomsServer.room.requests.CreateRequest;
+import net.rooms.RoomsServer.room.requests.JoinRequest;
 import net.rooms.RoomsServer.room.requests.UpdateDescriptionRequest;
 import net.rooms.RoomsServer.room.requests.UpdateTitleRequest;
 import net.rooms.RoomsServer.user.User;
@@ -49,6 +50,28 @@ public class RoomController {
 	@GetMapping(path = "api/v1/room/list")
 	public String list(@AuthenticationPrincipal User user) {
 		return roomService.list(user);
+	}
+
+	/**
+	 * Accepts REST API POST requests for adding the currently logged-in user to a room.
+	 * Only logged-in users who provide the password and not already a participant in the room, may
+	 * join it.
+	 * <code>
+	 * {
+	 *   "roomID" : 1,
+	 *   "password" : ""
+	 * }
+	 * </code>
+	 * Sends a notification with the new participant details to all participants if the join was
+	 * successful at "/queue/join".
+	 *
+	 * @param request Specifies to which room to join the user and the password.
+	 * @param user    The currently logged-in user that attempts to join the room.
+	 * @return A string with an error message in case the operation failed. Otherwise, "success".
+	 */
+	@PostMapping(path = "api/v1/room/join")
+	public String join(@RequestBody JoinRequest request, @AuthenticationPrincipal User user) {
+		return roomService.join(request, user);
 	}
 
 	/**
