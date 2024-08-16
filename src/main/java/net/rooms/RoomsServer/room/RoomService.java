@@ -7,6 +7,7 @@ import net.rooms.RoomsServer.JSON;
 import net.rooms.RoomsServer.adapters.LocalDateTimeAdapter;
 import net.rooms.RoomsServer.room.requests.CreateRequest;
 import net.rooms.RoomsServer.room.requests.JoinRequest;
+import net.rooms.RoomsServer.room.requests.LeaveRequest;
 import net.rooms.RoomsServer.room.requests.UpdateDescriptionRequest;
 import net.rooms.RoomsServer.room.requests.UpdateTitleRequest;
 import net.rooms.RoomsServer.user.Participant;
@@ -85,6 +86,28 @@ public class RoomService {
 
 		Participant participant = new Participant(request.roomID(), user.nickname(), user.username(), user.signupDate());
 		notifyParticipants(request.roomID(), "/queue/join", JSON.toJson(participant));
+
+		return "success";
+	}
+
+	/**
+	 * Removes the given user to the specified room. Allows the removal only if the user is a
+	 * participant in the room.
+	 * Sends a notification with the participant details to all participants if the removal was
+	 * successful at "/queue/leave".
+	 *
+	 * @param request Specifies which room the user is leaving.
+	 * @param user    The currently logged-in user that attempts to leave the room.
+	 * @return A string with an error message in case the operation failed. Otherwise, "success".
+	 */
+	public String leave(LeaveRequest request, User user) {
+		if (!roomRepository.isParticipant(request.roomID(), user.username()))
+			return "User " + user.username() + " is not a participant at room " + request.roomID();
+
+		if (!roomRepository.leaveUser(request.roomID(), user.username())) return "Leave failed";
+
+		Participant participant = new Participant(request.roomID(), user.nickname(), user.username(), user.signupDate());
+		notifyParticipants(request.roomID(), "/queue/leave", JSON.toJson(participant));
 
 		return "success";
 	}

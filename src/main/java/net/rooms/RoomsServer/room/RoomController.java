@@ -3,6 +3,7 @@ package net.rooms.RoomsServer.room;
 import lombok.AllArgsConstructor;
 import net.rooms.RoomsServer.room.requests.CreateRequest;
 import net.rooms.RoomsServer.room.requests.JoinRequest;
+import net.rooms.RoomsServer.room.requests.LeaveRequest;
 import net.rooms.RoomsServer.room.requests.UpdateDescriptionRequest;
 import net.rooms.RoomsServer.room.requests.UpdateTitleRequest;
 import net.rooms.RoomsServer.user.User;
@@ -72,6 +73,26 @@ public class RoomController {
 	@PostMapping(path = "api/v1/room/join")
 	public String join(@RequestBody JoinRequest request, @AuthenticationPrincipal User user) {
 		return roomService.join(request, user);
+	}
+
+	/**
+	 * Accepts REST API POST requests for removing the currently logged-in user from a room.
+	 * Only logged-in users who are already a participant in the room may leave it.
+	 * <code>
+	 * {
+	 *   "roomID" : 1
+	 * }
+	 * </code>
+	 * Sends a notification with the participant details to all participants if the removal was
+	 * successful at "/queue/leave".
+	 *
+	 * @param request Specifies which room the user is leaving.
+	 * @param user    The currently logged-in user that attempts to leave the room.
+	 * @return A string with an error message in case the operation failed. Otherwise, "success".
+	 */
+	@PostMapping(path = "api/v1/room/leave")
+	public String leave(@RequestBody LeaveRequest request, @AuthenticationPrincipal User user) {
+		return roomService.leave(request, user);
 	}
 
 	/**

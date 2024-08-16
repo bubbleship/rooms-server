@@ -41,6 +41,16 @@ public interface RoomRepository {
 	boolean joinUser(Long roomID, String username);
 
 	/**
+	 * Removes a user as a participant in a room by removing the given parameters from the
+	 * 'join_user_room' table.
+	 *
+	 * @param roomID   The identifier of the room where the user will no longer be a participant.
+	 * @param username The username of the participant.
+	 * @return True if the operation was successful. Otherwise, false.
+	 */
+	boolean leaveUser(Long roomID, String username);
+
+	/**
 	 * Query the 'room' table for the identifier of the most recent room. If the table is empty 0
 	 * is returned.
 	 *
