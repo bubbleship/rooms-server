@@ -16,6 +16,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Service
 @AllArgsConstructor
@@ -161,5 +162,12 @@ public class RoomService {
 	private void notifyParticipants(long roomID, String destination, String payload) {
 		for (Participant participant : roomRepository.listParticipants(roomID))
 			template.convertAndSendToUser(participant.username(), destination, payload);
+	}
+
+	public String listParticipants(long roomID, User user) {
+		if (!roomRepository.isParticipant(roomID, user.username()))
+			return JSON.toJson(new ArrayList<>());
+
+		return JSON.toJson(roomRepository.listParticipants(roomID));
 	}
 }

@@ -9,6 +9,7 @@ import net.rooms.RoomsServer.room.requests.UpdateTitleRequest;
 import net.rooms.RoomsServer.user.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -137,5 +138,10 @@ public class RoomController {
 	@PostMapping(path = "api/v1/room/update/description")
 	public String updateDescription(@RequestBody UpdateDescriptionRequest request, @AuthenticationPrincipal User user) {
 		return roomService.updateDescription(request, user);
+	}
+
+	@GetMapping(path = "api/v1/room/{roomID}/participants")
+	public String listParticipants(@PathVariable("roomID") long roomID, @AuthenticationPrincipal User user) {
+		return roomService.listParticipants(roomID, user);
 	}
 }
