@@ -144,4 +144,9 @@ public class RoomController {
 	public String listParticipants(@PathVariable("roomID") long roomID, @AuthenticationPrincipal User user) {
 		return roomService.listParticipants(roomID, user);
 	}
+
+	@GetMapping(path = "api/v1/room/search/{prefix}")
+	public String searchPublicRooms(@PathVariable("prefix") String prefix) {
+		return roomService.searchPublicRooms(prefix);
+	}
 }

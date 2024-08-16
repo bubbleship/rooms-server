@@ -170,4 +170,8 @@ public class RoomService {
 
 		return JSON.toJson(roomRepository.listParticipants(roomID));
 	}
+
+	public String searchPublicRooms(String titlePrefix) {
+		return JSON.toJson(roomRepository.searchPublicRooms(titlePrefix));
+	}
 }

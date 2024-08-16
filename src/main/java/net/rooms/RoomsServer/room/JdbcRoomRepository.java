@@ -180,4 +180,22 @@ public class JdbcRoomRepository implements RoomRepository {
 				.query(Participant.class)
 				.list();
 	}
+
+	/**
+	 * Searches the entire database and provides a list of rooms where their titles starts with the
+	 * given prefix.
+	 * Only returns public rooms.
+	 *
+	 * @param titlePrefix The prefix used to search the database.
+	 * @return A list of {@link PublicRoom} objects where their titles starts with the given prefix.
+	 */
+	@Override
+	public List<PublicRoom> searchPublicRooms(String titlePrefix) {
+		return jdbcClient.sql("SELECT rid AS room_i_d, title, owner, creation_date, description " +
+							  "FROM room " +
+							  "WHERE is_private = FALSE AND title LIKE ?")
+				.params(titlePrefix + "%")
+				.query(PublicRoom.class)
+				.list();
+	}
 }

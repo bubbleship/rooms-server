@@ -97,4 +97,14 @@ public interface RoomRepository {
 	boolean isParticipant(long roomID, String username);
 
 	List<Participant> listParticipants(long roomID);
+
+	/**
+	 * Searches the entire database and provides a list of rooms where their titles starts with the
+	 * given prefix.
+	 * Only returns public rooms.
+	 *
+	 * @param titlePrefix The prefix used to search the database.
+	 * @return A list of {@link PublicRoom} objects where their titles starts with the given prefix.
+	 */
+	List<PublicRoom> searchPublicRooms(String titlePrefix);
 }
