@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import net.rooms.RoomsServer.JSON;
 import net.rooms.RoomsServer.adapters.LocalDateTimeAdapter;
 import net.rooms.RoomsServer.room.requests.CreateRequest;
+import net.rooms.RoomsServer.room.requests.InviteRequest;
 import net.rooms.RoomsServer.room.requests.JoinRequest;
 import net.rooms.RoomsServer.room.requests.LeaveRequest;
 import net.rooms.RoomsServer.room.requests.UpdateDescriptionRequest;
@@ -84,6 +85,30 @@ public class RoomService {
 			return "Join failed, invalid password";
 
 		if (!roomRepository.joinUser(request.roomID(), user.username())) return "Join failed";
+
+		Participant participant = new Participant(request.roomID(), user.nickname(), user.username(), user.signupDate());
+		notifyParticipants(request.roomID(), "/queue/join", JSON.toJson(participant));
+
+		return "success";
+	}
+
+	/**
+	 * Adds the specified user to the specified room. Allows the addition only if the inviting
+	 * user is a participant in the room and the specified user isn't.
+	 * Sends a notification with the new participant details to all participants if the invitation
+	 * was successful at "/queue/join".
+	 *
+	 * @param request Specifies to which room to invite the specified user.
+	 * @param user    The currently logged-in user that attempts to invite the user.
+	 * @return A string with an error message in case the operation failed. Otherwise, "success".
+	 */
+	public String invite(InviteRequest request, User user) {
+		if (!roomRepository.isParticipant(request.roomID(), user.username()))
+			return "User " + user.username() + " is not a participant at room " + request.roomID();
+		if (roomRepository.isParticipant(request.roomID(), request.username()))
+			return "User " + user.username() + " is already a participant at room " + request.roomID();
+
+		if (!roomRepository.joinUser(request.roomID(), request.username())) return "Invite failed";
 
 		Participant participant = new Participant(request.roomID(), user.nickname(), user.username(), user.signupDate());
 		notifyParticipants(request.roomID(), "/queue/join", JSON.toJson(participant));

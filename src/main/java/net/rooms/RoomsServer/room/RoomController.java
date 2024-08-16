@@ -2,6 +2,7 @@ package net.rooms.RoomsServer.room;
 
 import lombok.AllArgsConstructor;
 import net.rooms.RoomsServer.room.requests.CreateRequest;
+import net.rooms.RoomsServer.room.requests.InviteRequest;
 import net.rooms.RoomsServer.room.requests.JoinRequest;
 import net.rooms.RoomsServer.room.requests.LeaveRequest;
 import net.rooms.RoomsServer.room.requests.UpdateDescriptionRequest;
@@ -74,6 +75,28 @@ public class RoomController {
 	@PostMapping(path = "api/v1/room/join")
 	public String join(@RequestBody JoinRequest request, @AuthenticationPrincipal User user) {
 		return roomService.join(request, user);
+	}
+
+	/**
+	 * Accepts REST API POST requests for inviting the specified user to a room.
+	 * Only logged-in users who are already participants in the room, may invite other users.
+	 * JSON content request example:
+	 * <code>
+	 * {
+	 *   "roomID" : 1,
+	 *   "username" : "username"
+	 * }
+	 * </code>
+	 * Sends a notification with the new participant details to all participants if the invite was
+	 * successful at "/queue/join".
+	 *
+	 * @param request Specifies to which room to invite the specified user.
+	 * @param user    The currently logged-in user that attempts to invite the user.
+	 * @return A string with an error message in case the operation failed. Otherwise, "success".
+	 */
+	@PostMapping(path = "api/v1/room/invite")
+	public String invite(@RequestBody InviteRequest request, @AuthenticationPrincipal User user) {
+		return roomService.invite(request, user);
 	}
 
 	/**
