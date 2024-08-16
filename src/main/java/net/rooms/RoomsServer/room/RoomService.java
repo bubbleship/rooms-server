@@ -3,11 +3,14 @@ package net.rooms.RoomsServer.room;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.AllArgsConstructor;
+import net.rooms.RoomsServer.JSON;
 import net.rooms.RoomsServer.adapters.LocalDateTimeAdapter;
 import net.rooms.RoomsServer.room.requests.CreateRequest;
 import net.rooms.RoomsServer.room.requests.UpdateDescriptionRequest;
 import net.rooms.RoomsServer.room.requests.UpdateTitleRequest;
+import net.rooms.RoomsServer.user.Participant;
 import net.rooms.RoomsServer.user.User;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,6 +19,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class RoomService {
 
+	private final SimpMessagingTemplate template;
 	private final RoomRepository roomRepository;
 
 	/**
@@ -74,12 +78,16 @@ public class RoomService {
 		if (!roomRepository.updateTitle(request.roomID(), request.title()))
 			return "Title update failed for room " + request.roomID();
 
+
+
 		return "success";
 	}
 
 	/**
 	 * Updates the description of a specific room. Would allow the update only if the specified
 	 * user is a participant in said room.
+	 * Sends a notification with the new room details to all participants if the update was
+	 * successful at "/queue/description".
 	 *
 	 * @param request Configurations set by the user about the new description and to which room.
 	 * @param user    The currently logged-in user.
@@ -91,6 +99,15 @@ public class RoomService {
 		if (!roomRepository.updateDescription(request.roomID(), request.description()))
 			return "Description update failed for room " + request.roomID();
 
+		Room room = roomRepository.getByID(request.roomID());
+		String parsedRoom = JSON.toJson(room);
+		notifyParticipants(request.roomID(), "/queue/description", parsedRoom);
+
 		return "success";
+	}
+
+	private void notifyParticipants(long roomID, String destination, String payload) {
+		for (Participant participant : roomRepository.listParticipants(roomID))
+			template.convertAndSendToUser(participant.username(), destination, payload);
 	}
 }

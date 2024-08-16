@@ -30,6 +30,22 @@ public class JdbcRoomRepository implements RoomRepository {
 	}
 
 	/**
+	 * Retrieves the {@link Room} with the given ID from the database.
+	 *
+	 * @param roomID The ID of the room to find.
+	 * @return The {@link Room} object with the given ID.
+	 */
+	@Override
+	public Room getByID(long roomID) {
+		return jdbcClient.sql("SELECT rid AS room_i_d, title, is_private, password, owner, creation_date, description " +
+							  "FROM room " +
+							  "WHERE rid = ?")
+				.params(roomID)
+				.query(Room.class)
+				.single();
+	}
+
+	/**
 	 * Deletes the row with the given identifier from the 'room' table in the database.
 	 *
 	 * @param roomID The identifier (primary key) of the room to delete from the 'room' table.

@@ -81,6 +81,8 @@ public class RoomController {
 	 *   "description" : "A description"
 	 * }
 	 * </code>
+	 * Sends a notification with the new room details to all participants if the update was
+	 * successful at "/queue/description".
 	 *
 	 * @param request Configurations set by the user about the new description and to which room.
 	 * @param user    The currently logged-in user.

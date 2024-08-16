@@ -16,6 +16,14 @@ public interface RoomRepository {
 	boolean create(Room room);
 
 	/**
+	 * Retrieves the {@link Room} with the given ID from the database.
+	 *
+	 * @param roomID The ID of the room to find.
+	 * @return The {@link Room} object with the given ID.
+	 */
+	Room getByID(long roomID);
+
+	/**
 	 * Deletes the row with the given identifier from the 'room' table in the database.
 	 *
 	 * @param roomID The identifier (primary key) of the room to delete from the 'room' table.
