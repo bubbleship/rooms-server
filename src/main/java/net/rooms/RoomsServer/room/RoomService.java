@@ -13,6 +13,7 @@ import net.rooms.RoomsServer.room.requests.UpdateDescriptionRequest;
 import net.rooms.RoomsServer.room.requests.UpdateTitleRequest;
 import net.rooms.RoomsServer.user.Participant;
 import net.rooms.RoomsServer.user.User;
+import net.rooms.RoomsServer.user.UserRepository;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ public class RoomService {
 
 	private final SimpMessagingTemplate template;
 	private final RoomRepository roomRepository;
+	private final UserRepository userRepository;
 
 	/**
 	 * Handles the creation of a new room.
@@ -105,6 +107,8 @@ public class RoomService {
 	public String invite(InviteRequest request, User user) {
 		if (!roomRepository.isParticipant(request.roomID(), user.username()))
 			return "User " + user.username() + " is not a participant at room " + request.roomID();
+		if (userRepository.findByUsername(request.username()).isEmpty())
+			return "User " + user.username() + " does not exist";
 		if (roomRepository.isParticipant(request.roomID(), request.username()))
 			return "User " + user.username() + " is already a participant at room " + request.roomID();
 
