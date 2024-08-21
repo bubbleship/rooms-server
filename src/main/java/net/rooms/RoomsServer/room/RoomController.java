@@ -163,11 +163,30 @@ public class RoomController {
 		return roomService.updateDescription(request, user);
 	}
 
+	/**
+	 * Accepts REST API GET requests for the list of participants of a given room.
+	 * Only logged-in users who are participants in the room may receive such a list. As such, the
+	 * list would always include the user that made the request.
+	 *
+	 * @param roomID The ID of the room from which the list is requested.
+	 * @param user   The currently logged-in user.
+	 * @return A json string with the list of participants for the specified room if the logged-in
+	 * user is a participant in that room. Otherwise, a json string of an empty list.
+	 */
 	@GetMapping(path = "api/v1/room/{roomID}/participants")
 	public String listParticipants(@PathVariable("roomID") long roomID, @AuthenticationPrincipal User user) {
 		return roomService.listParticipants(roomID, user);
 	}
 
+	/**
+	 * Accepts REST API GET requests for the list of all public rooms where their title starts with
+	 * the specified prefix.
+	 * Any logged-in user may request such a list.
+	 *
+	 * @param prefix A string used to search the rooms.
+	 * @return A json string containing a list of {@link PublicRoom} objects where their title
+	 * starts with the given prefix.
+	 */
 	@GetMapping(path = "api/v1/room/search/{prefix}")
 	public String searchPublicRooms(@PathVariable("prefix") String prefix) {
 		return roomService.searchPublicRooms(prefix);
