@@ -193,6 +193,17 @@ public class RoomService {
 			template.convertAndSendToUser(participant.username(), destination, payload);
 	}
 
+	/**
+	 * Prepares a json string containing the list of participants for the specified room. The
+	 * operation would work only if the given user is a participant in the specified room.
+	 * Otherwise, an empty list is returned.
+	 * The json string represents a list of {@link Participant} objects.
+	 *
+	 * @param roomID The ID of the specified room.
+	 * @param user   The currently logged-in user.
+	 * @return A json string with the list of participants for the specified room if the logged-in
+	 * user is a participant in that room. Otherwise, a json string of an empty list.
+	 */
 	public String listParticipants(long roomID, User user) {
 		if (!roomRepository.isParticipant(roomID, user.username()))
 			return JSON.toJson(new ArrayList<>());
@@ -200,6 +211,16 @@ public class RoomService {
 		return JSON.toJson(roomRepository.listParticipants(roomID));
 	}
 
+	/**
+	 * Prepares a json string with a list of {@link PublicRoom} objects representing all the rooms
+	 * where their {@link PublicRoom#title()} property begins with the given prefix.
+	 * The list would never contain a reference to a private room.
+	 * {@link PublicRoom} only contain some of the fields from {@link Room}.
+	 *
+	 * @param titlePrefix A string representing the title prefix.
+	 * @return A json string containing a list of {@link PublicRoom} objects where their title
+	 * starts with the given prefix.
+	 */
 	public String searchPublicRooms(String titlePrefix) {
 		return JSON.toJson(roomRepository.searchPublicRooms(titlePrefix));
 	}
