@@ -1,10 +1,7 @@
 package net.rooms.RoomsServer.room;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import lombok.AllArgsConstructor;
 import net.rooms.RoomsServer.JSON;
-import net.rooms.RoomsServer.adapters.LocalDateTimeAdapter;
 import net.rooms.RoomsServer.room.requests.CreateRequest;
 import net.rooms.RoomsServer.room.requests.InviteRequest;
 import net.rooms.RoomsServer.room.requests.JoinRequest;
@@ -51,10 +48,7 @@ public class RoomService {
 			return "Room creation failed on join";
 		}
 
-		Gson gson = new GsonBuilder()
-				.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-				.create();
-		return gson.toJson(room);
+		return JSON.toJson(room);
 	}
 
 	/**
@@ -64,10 +58,7 @@ public class RoomService {
 	 * @return A json string containing a list of rooms where the user is a participant.
 	 */
 	public String list(User user) {
-		Gson gson = new GsonBuilder()
-				.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-				.create();
-		return gson.toJson(roomRepository.listByUser(user.username()));
+		return JSON.toJson(roomRepository.listByUser(user.username()));
 	}
 
 	/**
