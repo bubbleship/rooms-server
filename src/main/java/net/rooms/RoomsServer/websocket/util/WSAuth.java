@@ -8,6 +8,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 
 public final class WSAuth {
+	/**
+	 * Provides a convenient interface for interacting with {@link CustomSessionListener} to get
+	 * the currently logged-in user given a {@link WSRequest} object.
+	 *
+	 * @param request The request sent over the websocket connection with the session ID.
+	 * @return The {@link User} associated with that session ID. {@link User#EMPTY} if the session
+	 * ID is not valid.
+	 */
 	public static @NonNull User getUser(WSRequest request) {
 		HttpSession session = CustomSessionListener.getSession(request.jSessionID());
 		if (session == null) return User.EMPTY;
