@@ -31,7 +31,7 @@ public class CustomSessionListener implements HttpSessionListener {
 	public void sessionDestroyed(HttpSessionEvent event) {
 		HttpSession session = event.getSession();
 		// Queries to this class are expected to begin with "JSESSIONID=".
-		sessions.remove(session.getId());
+		sessions.remove("JSESSIONID=" + session.getId());
 	}
 
 	public static HttpSession getSession(String sessionId) {
