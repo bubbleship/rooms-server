@@ -14,10 +14,10 @@ public class RegistrationService {
 	private final UserService userService;
 
 	/**
-	 * Verify the signup details.
+	 * Verifies the signup details.
 	 *
-	 * @param request
-	 * @return A string holding an error message in case the signup fails, otherwise success.
+	 * @param request The details for the new account.
+	 * @return A string with an error message in case the operation failed. Otherwise, "success".
 	 */
 	public String register(RegistrationRequest request) {
 		if (request.username().contains("\"")) return "Invalid username";
