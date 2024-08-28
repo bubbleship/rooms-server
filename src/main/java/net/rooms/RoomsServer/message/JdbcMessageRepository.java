@@ -21,6 +21,26 @@ public class JdbcMessageRepository implements MessageRepository {
 	}
 
 	@Override
+	public boolean update(Message message) {
+		int updated = jdbcClient.sql("UPDATE message " +
+									 "SET rid = ?, type = ?, sender = ?, content = ?, send_date = ? " +
+									 "WHERE id = ?")
+				.params(message.roomID(), message.type(), message.sender(), message.content(), message.sendDate(), message.id())
+				.update();
+		return updated == 1;
+	}
+
+	@Override
+	public Message get(long id) {
+		return jdbcClient.sql("SELECT id, rid AS roomID, type, sender, content, send_date " +
+							  "FROM message " +
+							  "WHERE id = ?")
+				.params(id)
+				.query(Message.class)
+				.single();
+	}
+
+	@Override
 	public long lastID() {
 		Object result = jdbcClient.sql("SELECT NEXT VALUE FOR msg_id").query().singleValue();
 		//noinspection ConstantValue

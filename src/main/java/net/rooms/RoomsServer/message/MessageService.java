@@ -1,6 +1,7 @@
 package net.rooms.RoomsServer.message;
 
 import lombok.AllArgsConstructor;
+import net.rooms.RoomsServer.game.GameService;
 import net.rooms.RoomsServer.message.requests.MessageRequest;
 import net.rooms.RoomsServer.room.RoomRepository;
 import net.rooms.RoomsServer.user.Participant;
@@ -17,12 +18,14 @@ public class MessageService {
 
 	private final MessageRepository messageRepository;
 	private final RoomRepository roomRepository;
+	private final GameService gameService;
 
 	public Message create(MessageRequest request, User user) {
 		if (!roomRepository.isParticipant(request.roomID(), user.username())) return Message.EMPTY;
 
 		long id = messageRepository.lastID();
 		Message message = new Message(id, request.roomID(), request.type(), user.username(), request.content(), LocalDateTime.now());
+		if (!gameService.handle(message)) return Message.EMPTY;
 		if (!messageRepository.create(message)) return Message.EMPTY;
 		return message;
 	}

@@ -17,7 +17,19 @@ public final class WSAuth {
 	 * ID is not valid.
 	 */
 	public static @NonNull User getUser(WSRequest request) {
-		HttpSession session = CustomSessionListener.getSession(request.jSessionID());
+		return getUser(request.jSessionID());
+	}
+
+	/**
+	 * Provides a convenient interface for interacting with {@link CustomSessionListener} to get
+	 * the currently logged-in user given its session ID.
+	 *
+	 * @param sessionID A string representing a  session ID.
+	 * @return The {@link User} associated with that session ID. {@link User#EMPTY} if the session
+	 * ID is not valid.
+	 */
+	public static @NonNull User getUser(String sessionID) {
+		HttpSession session = CustomSessionListener.getSession(sessionID);
 		if (session == null) return User.EMPTY;
 
 		SecurityContext securityContext = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
