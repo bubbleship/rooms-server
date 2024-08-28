@@ -191,9 +191,13 @@ public class JdbcRoomRepository implements RoomRepository {
 	 */
 	@Override
 	public List<PublicRoom> searchPublicRooms(String titlePrefix) {
-		return jdbcClient.sql("SELECT rid AS room_i_d, title, owner, creation_date, description " +
-							  "FROM room " +
-							  "WHERE is_private = FALSE AND title LIKE ?")
+		return jdbcClient.sql("""
+						SELECT rid AS room_i_d, title, CASE\s
+						        WHEN password = '' THEN FALSE
+						        ELSE TRUE
+						    END AS has_password, owner, creation_date, description \
+						FROM room \
+						WHERE is_private = FALSE AND title LIKE ?""")
 				.params(titlePrefix + "%")
 				.query(PublicRoom.class)
 				.list();
