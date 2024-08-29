@@ -98,10 +98,10 @@ public class JdbcRoomRepository implements RoomRepository {
 	 */
 	@Override
 	public long lastID() {
-		Object result = jdbcClient.sql("SELECT MAX(rid) FROM room").query().singleValue();
+		Object result = jdbcClient.sql("SELECT NEXT VALUE FOR room_id").query().singleValue();
 		//noinspection ConstantValue
 		if (result == null) return 0L;
-		return Long.valueOf((Integer) result);
+		return (Long) result;
 	}
 
 	/**
