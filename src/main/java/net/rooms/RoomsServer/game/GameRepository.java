@@ -6,6 +6,7 @@ import net.rooms.RoomsServer.game.config.GameConfig;
 import net.rooms.RoomsServer.game.config.GameType;
 import net.rooms.RoomsServer.game.notifications.GameUpdate;
 import net.rooms.RoomsServer.message.Message;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -41,6 +42,7 @@ public class GameRepository {
 		if (!games.containsKey(id)) return null;
 
 		GameEntry entry = games.get(id);
+		if (!entry.state.isPending) return null;
 		entry.participants.add(username);
 		if (!entry.config.verify(entry)) {
 			entry.participants.remove(username);
@@ -68,18 +70,44 @@ public class GameRepository {
 		return buildGameUpdate(entry, username);
 	}
 
+	@Synchronized
+	public GameUpdate startGame(long id, String username) {
+		if (!games.containsKey(id)) return null;
+
+		GameEntry entry = games.get(id);
+		if (!entry.state.isPending) return null; // Game has already started
+		if (!entry.host.equals(username)) return null; // Only the game host may start the game
+
+		entry.state.isPending = false; // The game is no longer pending
+		return buildGameUpdate(entry, username);
+	}
+
 	private GameUpdate buildGameUpdate(GameEntry entry, String username) {
 		return new GameUpdate(entry.config(), username, entry.participants().stream().toList());
+	}
+
+	public Set<String> getGameParticipants(long id) {
+		return games.get(id).participants;
+	}
+
+	public @NonNull String getHost(long id) {
+		if (!games.containsKey(id)) return "";
+		return games.get(id).host;
 	}
 
 	public record GameEntry(
 		String host,
 		Set<String> participants,
 		GameType type,
-		GameConfig config
+		GameConfig config,
+		GameState state
 	) {
 		public GameEntry(String sender, GameType type, GameConfig config) {
-			this(sender, new HashSet<>(List.of(sender)), type, config);
+			this(sender, new HashSet<>(List.of(sender)), type, config, new GameState());
 		}
+	}
+
+	private static class GameState {
+		boolean isPending = true;
 	}
 }
