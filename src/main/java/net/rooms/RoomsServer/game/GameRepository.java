@@ -83,6 +83,18 @@ public class GameRepository {
 		return buildGameUpdate(entry, username);
 	}
 
+	@Synchronized
+	public boolean closeGame(long id, String username) {
+		if (!games.containsKey(id)) return false;
+
+		GameEntry entry = games.get(id);
+		if (!entry.host.equals(username)) return false; // Only the game host may close the game
+		if (entry.state.isPending) return false; // Pending games haven't started yet and cannot be closed
+		entry.participants.forEach(usernames::remove);
+		games.remove(id);
+		return true;
+	}
+
 	private GameUpdate buildGameUpdate(GameEntry entry, String username) {
 		return new GameUpdate(entry.config(), username, entry.participants().stream().toList());
 	}

@@ -85,6 +85,19 @@ public class GameService {
 		return updatedMessage;
 	}
 
+	public Message submit(BroadcastRequest request, User user) {
+		if (!gameRepository.closeGame(request.id(), user.username())) return Message.EMPTY;
+
+		Message message = messageRepository.get(request.id());
+		MessageType messageType = message.type();
+		switch (messageType) {
+			case PONG_GAME_ONGOING -> messageType = MessageType.PONG_GAME_RESULT;
+		}
+		Message updatedMessage = new Message(message.id(), message.roomID(), messageType, message.sender(), request.payload(), message.sendDate());
+		messageRepository.update(updatedMessage);
+		return updatedMessage;
+	}
+
 	public long getGameID(String username) {
 		return gameRepository.getGameID(username);
 	}

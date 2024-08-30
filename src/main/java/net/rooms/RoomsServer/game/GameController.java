@@ -63,6 +63,24 @@ public class GameController {
 	}
 
 	/**
+	 * Accepts WS requests for submitting a game results.
+	 * Only requests with a valid session id that is associated with a user who is the host of the
+	 * game, would be honored.
+	 * Sends a notification with an updated message to all participants of the room, if the request
+	 * was successful, at "/queue/game/results".
+	 *
+	 * @param payload The payload containing the game id.
+	 */
+	@MessageMapping("/game/submit")
+	public void submitGame(@Payload String payload) {
+		BroadcastRequest request = JSON.fromJson(payload, BroadcastRequest.class);
+		User user = WSAuth.getUser(request);
+
+		Message message = gameService.submit(request, user);
+		notifyParticipants(message.roomID(), user.username(), "/queue/game/results", JSON.toJson(message));
+	}
+
+	/**
 	 * Accepts WS requests for broadcasting a payload to game participants.
 	 * Only requests with a valid session id that is associated with a user who is the host of the
 	 * game, would be honored.
