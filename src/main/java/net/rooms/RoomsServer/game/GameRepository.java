@@ -31,7 +31,7 @@ public class GameRepository {
 		GameConfig config = JSON.fromJson(message.content(), type);
 		if (!config.verify()) return false;
 
-		games.put(message.id(), new GameEntry(message.sender(), gameType, config));
+		games.put(message.id(), new GameEntry(message.roomID(), message.sender(), gameType, config));
 		usernames.put(message.sender(), message.id());
 		return true;
 	}
@@ -100,15 +100,21 @@ public class GameRepository {
 		return usernames.getOrDefault(username, 0L);
 	}
 
+	public long getRoomID(long id) {
+		if (!games.containsKey(id)) return 0L;
+		return games.get(id).roomID;
+	}
+
 	public record GameEntry(
+		long roomID,
 		String host,
 		Set<String> participants,
 		GameType type,
 		GameConfig config,
 		GameState state
 	) {
-		public GameEntry(String sender, GameType type, GameConfig config) {
-			this(sender, new HashSet<>(List.of(sender)), type, config, new GameState());
+		public GameEntry(long roomID, String sender, GameType type, GameConfig config) {
+			this(roomID, sender, new HashSet<>(List.of(sender)), type, config, new GameState());
 		}
 	}
 

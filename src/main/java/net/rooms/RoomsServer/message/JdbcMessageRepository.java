@@ -25,7 +25,7 @@ public class JdbcMessageRepository implements MessageRepository {
 		int updated = jdbcClient.sql("UPDATE message " +
 									 "SET rid = ?, type = ?, sender = ?, content = ?, send_date = ? " +
 									 "WHERE id = ?")
-				.params(message.roomID(), message.type(), message.sender(), message.content(), message.sendDate(), message.id())
+				.params(message.roomID(), message.type().ordinal(), message.sender(), message.content(), message.sendDate(), message.id())
 				.update();
 		return updated == 1;
 	}

@@ -1,6 +1,8 @@
 package net.rooms.RoomsServer.room;
 
 import lombok.AllArgsConstructor;
+import net.rooms.RoomsServer.game.GameController;
+import net.rooms.RoomsServer.game.GameService;
 import net.rooms.RoomsServer.room.requests.CreateRequest;
 import net.rooms.RoomsServer.room.requests.InviteRequest;
 import net.rooms.RoomsServer.room.requests.JoinRequest;
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class RoomController {
 
 	private final RoomService roomService;
+	private final GameService gameService;
+	private final GameController gameController;
 
 	/**
 	 * Accepts API requests for room creation.
@@ -102,13 +106,15 @@ public class RoomController {
 	/**
 	 * Accepts REST API POST requests for removing the currently logged-in user from a room.
 	 * Only logged-in users who are already a participant in the room may leave it.
+	 * Also removes the user from any game within the room, if participating in one.
 	 * <code>
 	 * {
 	 *   "roomID" : 1
 	 * }
 	 * </code>
 	 * Sends a notification with the participant details to all participants if the removal was
-	 * successful at "/queue/leave".
+	 * successful at "/queue/leave" and at "/queue/game/leave" if also participated in a game.
+	 *
 	 *
 	 * @param request Specifies which room the user is leaving.
 	 * @param user    The currently logged-in user that attempts to leave the room.
@@ -116,6 +122,8 @@ public class RoomController {
 	 */
 	@PostMapping(path = "api/v1/room/leave")
 	public String leave(@RequestBody LeaveRequest request, @AuthenticationPrincipal User user) {
+		if (gameService.getRoomID(gameService.getGameID(user.username())) == request.roomID())
+			gameController.leaveGameUsername(user.username()); // The user should also leave any game within the room, if they participated in one
 		return roomService.leave(request, user);
 	}
 

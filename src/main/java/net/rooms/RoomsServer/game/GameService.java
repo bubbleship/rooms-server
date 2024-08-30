@@ -52,7 +52,7 @@ public class GameService {
 	}
 
 	public Message leave(String username) {
-		long id = gameRepository.getGameID(username);
+		long id = getGameID(username);
 		GameUpdate update = gameRepository.leave(username);
 		if (update == null) return Message.EMPTY;
 
@@ -83,6 +83,14 @@ public class GameService {
 		Message updatedMessage = new Message(message.id(), message.roomID(), messageType, message.sender(), JSON.toJson(update), message.sendDate());
 		messageRepository.update(updatedMessage);
 		return updatedMessage;
+	}
+
+	public long getGameID(String username) {
+		return gameRepository.getGameID(username);
+	}
+
+	public long getRoomID(long id) {
+		return gameRepository.getRoomID(id);
 	}
 
 	public Set<String> processBroadcastRequest(BroadcastRequest request, User user) {
