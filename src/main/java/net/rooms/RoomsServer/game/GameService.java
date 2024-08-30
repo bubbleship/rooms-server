@@ -45,17 +45,18 @@ public class GameService {
 
 		Message updatedMessage = new Message(message.id(), message.roomID(), message.type(), message.sender(), JSON.toJson(update), message.sendDate());
 		if (!messageRepository.update(updatedMessage)) {
-			gameRepository.leave(message.id(), user.username()); // Undo the operation in the unlikely case of failure
+			gameRepository.leave(user.username()); // Undo the operation in the unlikely case of failure
 			return Message.EMPTY;
 		}
 		return updatedMessage;
 	}
 
-	public Message leave(ParticipationRequest request, User user) {
-		GameUpdate update = gameRepository.leave(request.id(), user.username());
+	public Message leave(String username) {
+		long id = gameRepository.getGameID(username);
+		GameUpdate update = gameRepository.leave(username);
 		if (update == null) return Message.EMPTY;
 
-		Message message = messageRepository.get(request.id());
+		Message message = messageRepository.get(id);
 		MessageType messageType = message.type();
 		if (update.participants().isEmpty())
 			switch (messageType) {
@@ -63,7 +64,7 @@ public class GameService {
 			}
 		Message updatedMessage = new Message(message.id(), message.roomID(), messageType, message.sender(), JSON.toJson(update), message.sendDate());
 		if (!messageRepository.update(updatedMessage)) {
-			gameRepository.join(message.id(), user.username()); // Undo the operation in the unlikely case of failure
+			gameRepository.join(message.id(), username); // Undo the operation in the unlikely case of failure
 			return Message.EMPTY;
 		}
 		return updatedMessage;

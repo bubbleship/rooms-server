@@ -30,8 +30,8 @@ public class MessageService {
 		return message;
 	}
 
-	public List<Participant> participants(long roomID, User user) {
-		if (!roomRepository.isParticipant(roomID, user.username())) return new ArrayList<>();
+	public List<Participant> participants(long roomID, String username) {
+		if (!roomRepository.isParticipant(roomID, username)) return new ArrayList<>();
 
 		return roomRepository.listParticipants(roomID);
 	}

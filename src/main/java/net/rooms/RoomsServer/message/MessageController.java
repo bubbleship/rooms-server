@@ -42,7 +42,7 @@ public class MessageController {
 		if (message == Message.EMPTY) return;
 
 		String parsedMessage = JSON.toJson(message);
-		for (Participant participant : messageService.participants(request.roomID(), user))
+		for (Participant participant : messageService.participants(request.roomID(), user.username()))
 			template.convertAndSendToUser(participant.username(), "/queue/messages", parsedMessage);
 	}
 

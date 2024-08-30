@@ -28,7 +28,7 @@ public class GameController {
 		User user = WSAuth.getUser(request);
 
 		Message message = gameService.join(request, user);
-		notifyParticipants(message.roomID(), user, "/queue/game/join", JSON.toJson(message));
+		notifyParticipants(message.roomID(), user.username(), "/queue/game/join", JSON.toJson(message));
 	}
 
 	@MessageMapping("/game/leave")
@@ -36,8 +36,12 @@ public class GameController {
 		ParticipationRequest request = JSON.fromJson(payload, ParticipationRequest.class);
 		User user = WSAuth.getUser(request);
 
-		Message message = gameService.leave(request, user);
-		notifyParticipants(message.roomID(), user, "/queue/game/leave", JSON.toJson(message));
+		leaveGameUsername(user.username());
+	}
+
+	public void leaveGameUsername(String username) {
+		Message message = gameService.leave(username);
+		notifyParticipants(message.roomID(), username, "/queue/game/leave", JSON.toJson(message));
 	}
 
 	/**
@@ -55,7 +59,7 @@ public class GameController {
 		User user = WSAuth.getUser(request);
 
 		Message message = gameService.start(request, user);
-		notifyParticipants(message.roomID(), user, "/queue/game/start", JSON.toJson(message));
+		notifyParticipants(message.roomID(), user.username(), "/queue/game/start", JSON.toJson(message));
 	}
 
 	/**
@@ -97,8 +101,8 @@ public class GameController {
 		template.convertAndSendToUser(host, "/queue/game/host-channel", notification);
 	}
 
-	private void notifyParticipants(long roomID, User user, String destination, String payload) {
-		for (Participant participant : messageService.participants(roomID, user))
+	private void notifyParticipants(long roomID, String username, String destination, String payload) {
+		for (Participant participant : messageService.participants(roomID, username))
 			template.convertAndSendToUser(participant.username(), destination, payload);
 	}
 }

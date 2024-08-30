@@ -17,28 +17,28 @@ import java.util.Set;
 @Component
 public class GameRepository {
 	private final HashMap<Long, GameEntry> games;
-	private final Set<String> usernames;
+	private final HashMap<String, Long> usernames; // Username and game ID hash map
 
 	public GameRepository() {
 		games = new HashMap<>();
-		usernames = new HashSet<>();
+		usernames = new HashMap<>();
 	}
 
 	@Synchronized
 	public <T extends GameConfig> boolean open(Message message, GameType gameType, Class<T> type) {
-		if (usernames.contains(message.sender())) return false;
+		if (usernames.containsKey(message.sender())) return false;
 
 		GameConfig config = JSON.fromJson(message.content(), type);
 		if (!config.verify()) return false;
 
 		games.put(message.id(), new GameEntry(message.sender(), gameType, config));
-		usernames.add(message.sender());
+		usernames.put(message.sender(), message.id());
 		return true;
 	}
 
 	@Synchronized
 	public GameUpdate join(long id, String username) {
-		if (usernames.contains(username)) return null;
+		if (usernames.containsKey(username)) return null;
 		if (!games.containsKey(id)) return null;
 
 		GameEntry entry = games.get(id);
@@ -49,12 +49,13 @@ public class GameRepository {
 			return null;
 		}
 
-		usernames.add(username);
+		usernames.put(username, id);
 		return buildGameUpdate(entry, username);
 	}
 
 	@Synchronized
-	public GameUpdate leave(long id, String username) {
+	public GameUpdate leave(String username) {
+		long id = getGameID(username);
 		if (!games.containsKey(id)) return null;
 
 		GameEntry entry = games.get(id);
@@ -93,6 +94,10 @@ public class GameRepository {
 	public @NonNull String getHost(long id) {
 		if (!games.containsKey(id)) return "";
 		return games.get(id).host;
+	}
+
+	public long getGameID(String username) {
+		return usernames.getOrDefault(username, 0L);
 	}
 
 	public record GameEntry(
