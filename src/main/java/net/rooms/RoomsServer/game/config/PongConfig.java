@@ -3,6 +3,7 @@ package net.rooms.RoomsServer.game.config;
 import net.rooms.RoomsServer.game.GameRepository;
 
 public record PongConfig(
+		GameType type,
 		int maxPlayers,
 		int winScore
 ) implements GameConfig {
