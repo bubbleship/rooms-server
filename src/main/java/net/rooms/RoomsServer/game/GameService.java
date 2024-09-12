@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import net.rooms.RoomsServer.JSON;
 import net.rooms.RoomsServer.game.config.GameType;
 import net.rooms.RoomsServer.game.config.PongConfig;
+import net.rooms.RoomsServer.game.config.SnakesConfig;
 import net.rooms.RoomsServer.game.notifications.GameUpdate;
 import net.rooms.RoomsServer.game.requests.BroadcastRequest;
 import net.rooms.RoomsServer.game.requests.ParticipationRequest;
@@ -33,6 +34,9 @@ public class GameService {
 			case PONG_GAME_OPEN -> {
 				return gameRepository.open(message, GameType.PONG, PongConfig.class);
 			}
+			case SNAKES_GAME_OPEN -> {
+				return gameRepository.open(message, GameType.SNAKES, SnakesConfig.class);
+			}
 		}
 		return false;
 	}
@@ -61,6 +65,7 @@ public class GameService {
 		if (update.participants().isEmpty())
 			switch (messageType) {
 				case PONG_GAME_OPEN, PONG_GAME_ONGOING -> messageType = MessageType.PONG_GAME_ABORT;
+				case SNAKES_GAME_OPEN, SNAKES_GAME_ONGOING -> messageType = MessageType.SNAKES_GAME_ABORT;
 			}
 		Message updatedMessage = new Message(message.id(), message.roomID(), messageType, message.sender(), JSON.toJson(update), message.sendDate());
 		if (!messageRepository.update(updatedMessage)) {
@@ -79,6 +84,7 @@ public class GameService {
 		MessageType messageType = message.type();
 		switch (messageType) {
 			case PONG_GAME_OPEN -> messageType = MessageType.PONG_GAME_ONGOING;
+			case SNAKES_GAME_OPEN -> messageType = MessageType.SNAKES_GAME_ONGOING;
 		}
 		Message updatedMessage = new Message(message.id(), message.roomID(), messageType, message.sender(), JSON.toJson(update), message.sendDate());
 		messageRepository.update(updatedMessage);
@@ -92,6 +98,7 @@ public class GameService {
 		MessageType messageType = message.type();
 		switch (messageType) {
 			case PONG_GAME_ONGOING -> messageType = MessageType.PONG_GAME_RESULT;
+			case SNAKES_GAME_ONGOING -> messageType = MessageType.SNAKES_GAME_RESULT;
 		}
 		Message updatedMessage = new Message(message.id(), message.roomID(), messageType, message.sender(), request.payload(), message.sendDate());
 		messageRepository.update(updatedMessage);
