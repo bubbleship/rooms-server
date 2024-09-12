@@ -5,6 +5,10 @@ import java.time.LocalDateTime;
 /**
  * Represents a single message in a room the same way it is stored in the 'message' table in the
  * database.
+ * <br>
+ * A message may also represent a game lobby in its various stages, in which case the message id
+ * is also the identifier of the game and would be common across all updates made to the game
+ * lobby.
  *
  * @param id       A unique identifier for the message.
  * @param roomID   A unique identifier for the room to which the message is for.

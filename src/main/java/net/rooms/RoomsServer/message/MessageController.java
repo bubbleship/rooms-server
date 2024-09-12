@@ -27,6 +27,11 @@ public class MessageController {
 	 * Accepts WS requests for posting a new message in a room.
 	 * Only requests with a valid session id that is associated with a user who is a participant in
 	 * the specified room would be honored.
+	 * <br>
+	 * The posted message may also represent a game lobby, in which case {@link Message#type()}
+	 * would return a game type under {@link MessageType} that ends with "OPEN" instead of plain
+	 * {@link MessageType#MESSAGE}.
+	 * <br>
 	 * Sends a notification with the newly created message to all participants of the room, if the
 	 * request was successful, at "/queue/messages".
 	 *
