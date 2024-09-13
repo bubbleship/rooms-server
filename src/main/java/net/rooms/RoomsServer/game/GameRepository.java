@@ -63,6 +63,7 @@ public class GameRepository {
 
 		if (entry.host.equals(username)) {
 			entry.participants.forEach(usernames::remove);
+			entry.participants.clear();
 			games.remove(id);
 		} else {
 			entry.participants.remove(username);
