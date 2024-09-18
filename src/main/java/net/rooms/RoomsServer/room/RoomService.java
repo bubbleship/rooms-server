@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -104,8 +105,10 @@ public class RoomService {
 			return "User " + user.username() + " is already a participant at room " + request.roomID();
 
 		if (!roomRepository.joinUser(request.roomID(), request.username())) return "Invite failed";
+		Optional<User> optional = userRepository.findByUsername(request.username());
+		if (optional.isEmpty()) return "Invite failed";
 
-		Participant participant = new Participant(request.roomID(), user.nickname(), user.username(), user.signupDate());
+		Participant participant = new Participant(request.roomID(), optional.get().nickname(), optional.get().username(), optional.get().signupDate());
 		notifyParticipants(request.roomID(), "/queue/join", JSON.toJson(participant));
 
 		return "success";
