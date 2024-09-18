@@ -101,6 +101,7 @@ public class GameRepository {
 	}
 
 	public Set<String> getGameParticipants(long id) {
+		if (!games.containsKey(id)) return Set.of();
 		return games.get(id).participants;
 	}
 
