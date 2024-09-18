@@ -1,6 +1,7 @@
 package net.rooms.RoomsServer.registration;
 
 import lombok.AllArgsConstructor;
+import net.rooms.RoomsServer.user.UserRole;
 import net.rooms.RoomsServer.user.UserService;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ public class RegistrationService {
 		if (request.nickname().contains("\"")) return "Nickname cannot contain \" symbol";
 		if (request.password().length() < 8) return "Password is too short";
 		if (request.password().contains("\"")) return "Invalid character: \"";
+		if (request.role() != UserRole.USER) return "Creation of users with role other than USER is not allowed here";
 
 		return userService.signupUser(request.nickname(), request.username(), request.password(), request.role());
 	}
