@@ -5,8 +5,8 @@ package net.rooms.RoomsServer.room.requests;
  * record for easy access. Contains information set by the user.
  *
  * @param title     The display title of the room.
- * @param isPrivate Indicates whether the room requires password.
- * @param password  The password for the room, may be empty if the room is not private.
+ * @param isPrivate Indicates whether the room would appear on public search queries.
+ * @param password  The password for the room, may be empty if there is no password for the room.
  */
 public record CreateRequest(
 		String title,

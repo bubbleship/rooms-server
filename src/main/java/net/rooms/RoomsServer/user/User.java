@@ -25,6 +25,9 @@ public record User(
 		UserRole role,
 		LocalDateTime signupDate
 ) implements UserDetails {
+
+	public static final User EMPTY = new User("", "", "", UserRole.USER, LocalDateTime.MIN);
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		SimpleGrantedAuthority authority =
@@ -41,5 +44,4 @@ public record User(
 	public String getUsername() {
 		return username;
 	}
-
 }

@@ -7,6 +7,8 @@ CREATE TABLE IF NOT EXISTS users (
    PRIMARY KEY (username)
 );
 
+CREATE SEQUENCE IF NOT EXISTS room_id START WITH 1 INCREMENT BY 1;
+
 CREATE TABLE IF NOT EXISTS room (
    rid INT NOT NULL,
    title varchar(250) NOT NULL,
@@ -25,4 +27,18 @@ CREATE TABLE IF NOT EXISTS join_user_room (
     PRIMARY KEY (username, rid),
     FOREIGN KEY (username) REFERENCES users,
     FOREIGN KEY (rid) REFERENCES room
-)
+);
+
+CREATE SEQUENCE IF NOT EXISTS msg_id START WITH 1 INCREMENT BY 1;
+
+CREATE TABLE IF NOT EXISTS message (
+    id INT NOT NULL,
+    rid INT NOT NULL,
+    type INT NOT NULL,
+    sender varchar(250) NOT NULL,
+    content VARCHAR(MAX) NOT NULL,
+    send_date TIMESTAMP NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (rid) REFERENCES room,
+    FOREIGN KEY (sender) REFERENCES users
+);

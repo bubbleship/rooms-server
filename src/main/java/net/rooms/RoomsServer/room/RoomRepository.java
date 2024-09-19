@@ -1,5 +1,7 @@
 package net.rooms.RoomsServer.room;
 
+import net.rooms.RoomsServer.user.Participant;
+
 import java.util.List;
 
 public interface RoomRepository {
@@ -12,6 +14,14 @@ public interface RoomRepository {
 	 * @return True if the operation was successful. Otherwise, false.
 	 */
 	boolean create(Room room);
+
+	/**
+	 * Retrieves the {@link Room} with the given ID from the database.
+	 *
+	 * @param roomID The ID of the room to find.
+	 * @return The {@link Room} object with the given ID.
+	 */
+	Room getByID(long roomID);
 
 	/**
 	 * Deletes the row with the given identifier from the 'room' table in the database.
@@ -29,6 +39,16 @@ public interface RoomRepository {
 	 * @return True if the operation was successful. Otherwise, false.
 	 */
 	boolean joinUser(Long roomID, String username);
+
+	/**
+	 * Removes a user as a participant in a room by removing the given parameters from the
+	 * 'join_user_room' table.
+	 *
+	 * @param roomID   The identifier of the room where the user will no longer be a participant.
+	 * @param username The username of the participant.
+	 * @return True if the operation was successful. Otherwise, false.
+	 */
+	boolean leaveUser(Long roomID, String username);
 
 	/**
 	 * Query the 'room' table for the identifier of the most recent room. If the table is empty 0
@@ -75,4 +95,16 @@ public interface RoomRepository {
 	 * @return True if the given user is a participant in the specified room. Otherwise, false.
 	 */
 	boolean isParticipant(long roomID, String username);
+
+	List<Participant> listParticipants(long roomID);
+
+	/**
+	 * Searches the entire database and provides a list of rooms where their titles starts with the
+	 * given prefix.
+	 * Only returns public rooms.
+	 *
+	 * @param titlePrefix The prefix used to search the database.
+	 * @return A list of {@link PublicRoom} objects where their titles starts with the given prefix.
+	 */
+	List<PublicRoom> searchPublicRooms(String titlePrefix);
 }

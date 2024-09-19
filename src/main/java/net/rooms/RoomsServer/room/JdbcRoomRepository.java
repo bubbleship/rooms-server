@@ -1,6 +1,7 @@
 package net.rooms.RoomsServer.room;
 
 import lombok.AllArgsConstructor;
+import net.rooms.RoomsServer.user.Participant;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
@@ -26,6 +27,22 @@ public class JdbcRoomRepository implements RoomRepository {
 				.params(room.roomID(), room.title(), room.isPrivate(), room.password(), room.owner(), room.creationDate(), room.description())
 				.update();
 		return updated == 1;
+	}
+
+	/**
+	 * Retrieves the {@link Room} with the given ID from the database.
+	 *
+	 * @param roomID The ID of the room to find.
+	 * @return The {@link Room} object with the given ID.
+	 */
+	@Override
+	public Room getByID(long roomID) {
+		return jdbcClient.sql("SELECT rid AS room_i_d, title, is_private, password, owner, creation_date, description " +
+							  "FROM room " +
+							  "WHERE rid = ?")
+				.params(roomID)
+				.query(Room.class)
+				.single();
 	}
 
 	/**
@@ -57,6 +74,22 @@ public class JdbcRoomRepository implements RoomRepository {
 	}
 
 	/**
+	 * Removes a user as a participant in a room by removing the given parameters from the
+	 * 'join_user_room' table.
+	 *
+	 * @param roomID   The identifier of the room where the user will no longer be a participant.
+	 * @param username The username of the participant.
+	 * @return True if the operation was successful. Otherwise, false.
+	 */
+	@Override
+	public boolean leaveUser(Long roomID, String username) {
+		int updated = jdbcClient.sql("DELETE FROM join_user_room WHERE username = ? AND rid = ?")
+				.params(username, roomID)
+				.update();
+		return updated == 1;
+	}
+
+	/**
 	 * Query the 'room' table for the identifier of the most recent room. If the table is empty 0
 	 * is returned.
 	 *
@@ -65,10 +98,10 @@ public class JdbcRoomRepository implements RoomRepository {
 	 */
 	@Override
 	public long lastID() {
-		Object result = jdbcClient.sql("SELECT MAX(rid) FROM room").query().singleValue();
+		Object result = jdbcClient.sql("SELECT NEXT VALUE FOR room_id").query().singleValue();
 		//noinspection ConstantValue
 		if (result == null) return 0L;
-		return Long.valueOf((Integer) result);
+		return (Long) result;
 	}
 
 	/**
@@ -135,5 +168,38 @@ public class JdbcRoomRepository implements RoomRepository {
 				.listOfRows()
 				.size();
 		return status == 1;
+	}
+
+	@Override
+	public List<Participant> listParticipants(long roomID) {
+		return jdbcClient.sql("SELECT jur.rid AS room_i_d, users.nickname, users.username, users.signup_date " +
+							  "FROM join_user_room AS jur " +
+							  "JOIN users ON users.username = jur.username " +
+							  "WHERE jur.rid = ?")
+				.params(roomID)
+				.query(Participant.class)
+				.list();
+	}
+
+	/**
+	 * Searches the entire database and provides a list of rooms where their titles starts with the
+	 * given prefix.
+	 * Only returns public rooms.
+	 *
+	 * @param titlePrefix The prefix used to search the database.
+	 * @return A list of {@link PublicRoom} objects where their titles starts with the given prefix.
+	 */
+	@Override
+	public List<PublicRoom> searchPublicRooms(String titlePrefix) {
+		return jdbcClient.sql("""
+						SELECT rid AS room_i_d, title, CASE\s
+						        WHEN password = '' THEN FALSE
+						        ELSE TRUE
+						    END AS has_password, owner, creation_date, description \
+						FROM room \
+						WHERE is_private = FALSE AND title LIKE ?""")
+				.params(titlePrefix + "%")
+				.query(PublicRoom.class)
+				.list();
 	}
 }
