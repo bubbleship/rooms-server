@@ -20,12 +20,16 @@ For the client component see [rooms-client](https://github.com/RoyalGucci/rooms-
 
 ### How to Run
 
-1. **Clone the repository:**
+1. **Ensure Java version is 21:**
+    ```shell
+    java -version
+   ```
+2. **Clone the repository:**
     ```shell
     git clone https://github.com/bubbleship/rooms-server.git
     cd rooms-server
     ```
-2. **Start the server:**
+3. **Start the server:**
     ```shell
     ./gradlew bootRun
     ```
